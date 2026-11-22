@@ -1,0 +1,1076 @@
+{% extends 'donors/base.html' %}
+{% load static %}
+
+{% block title %}
+    BloodMatch | Intelligent Blood Donor Matching
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+/* =========================================================
+   BLOODMATCH HOME PAGE
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   HERO SECTION
+   --------------------------------------------------------- */
+
+.hero-section {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 620px;
+
+    display: flex;
+    align-items: center;
+
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(5, 20, 35, 0.90) 0%,
+            rgba(5, 25, 45, 0.78) 42%,
+            rgba(5, 25, 45, 0.42) 72%,
+            rgba(5, 25, 45, 0.58) 100%
+        ),
+        url("{% static 'donors/images/bloodmatch-hero-v3.png' %}");
+
+    background-size: cover;
+    background-position: 38% center;
+    background-repeat: no-repeat;
+}
+
+
+/* ---------------------------------------------------------
+   HERO CONTENT
+   --------------------------------------------------------- */
+
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+
+.hero-title {
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.08;
+
+    color: #ffffff;
+}
+
+
+.hero-title .text-danger {
+    color: #ff5c6c !important;
+}
+
+
+.hero-section .lead {
+    color: rgba(255, 255, 255, 0.88) !important;
+
+    max-width: 760px;
+}
+
+
+.hero-section small.text-body-secondary {
+    color: rgba(255, 255, 255, 0.82) !important;
+}
+
+
+/* ---------------------------------------------------------
+   HERO CARD
+   --------------------------------------------------------- */
+
+/*
+   Move the hero information card slightly to the left
+   on larger screens.
+*/
+
+.hero-section .col-lg-5 {
+    transform: translateX(-50px);
+}
+
+
+.hero-card {
+    border: 1px solid rgba(255, 255, 255, 0.20);
+
+    border-radius: 24px;
+
+    background: rgba(255, 255, 255, 0.94) !important;
+
+    box-shadow:
+        0 1.5rem 4rem rgba(0, 0, 0, 0.25);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    overflow: hidden;
+}
+
+
+/* ---------------------------------------------------------
+   HERO FEATURE CARDS
+   --------------------------------------------------------- */
+
+.hero-card .border {
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+
+.hero-card .border:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+
+    border-color:
+        rgba(220, 53, 69, 0.35) !important;
+}
+
+
+/* ---------------------------------------------------------
+   HOW IT WORKS
+   --------------------------------------------------------- */
+
+.process-card {
+    position: relative;
+
+    background: var(--bs-body-bg);
+
+    border: 1px solid var(--bs-border-color);
+
+    border-radius: 1rem;
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        border-color 0.25s ease;
+}
+
+
+.process-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+
+    border-color:
+        rgba(220, 53, 69, 0.35);
+}
+
+
+.process-number {
+    font-size: 0.75rem;
+
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+
+    color: var(--bs-danger);
+
+    margin-bottom: 1rem;
+}
+
+
+/* ---------------------------------------------------------
+   FEATURE ICONS
+   --------------------------------------------------------- */
+
+.feature-icon {
+    width: 48px;
+    height: 48px;
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    background: var(--blood-soft);
+
+    color: var(--blood-primary);
+
+    font-size: 1.25rem;
+}
+
+
+/* ---------------------------------------------------------
+   CALL TO ACTION
+   --------------------------------------------------------- */
+
+.home-cta {
+    border: 0;
+
+    border-radius: 20px;
+
+    box-shadow:
+        0 0.75rem 2rem rgba(220, 53, 69, 0.18);
+}
+
+
+.home-cta .btn {
+    border-radius: 10px;
+
+    font-weight: 600;
+}
+
+
+/* ---------------------------------------------------------
+   DARK MODE
+   --------------------------------------------------------- */
+
+[data-bs-theme="dark"] .hero-section {
+    background-image:
+        linear-gradient(
+            90deg,
+            rgba(0, 5, 15, 0.72) 0%,
+            rgba(0, 12, 25, 0.55) 45%,
+            rgba(0, 12, 25, 0.25) 75%,
+            rgba(0, 12, 25, 0.35) 100%
+        ),
+        url("{% static 'donors/images/bloodmatch-hero-v3.png' %}");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+/*
+   Dark-mode hero card
+*/
+
+[data-bs-theme="dark"] .hero-card {
+
+    background:
+        rgba(25, 30, 38, 0.94) !important;
+
+    border-color:
+        rgba(255, 255, 255, 0.12);
+
+    color: #ffffff;
+
+    box-shadow:
+        0 1.5rem 4rem rgba(0, 0, 0, 0.50);
+}
+
+
+/*
+   Dark-mode hero card text
+*/
+
+[data-bs-theme="dark"] .hero-card
+.text-body-secondary {
+
+    color:
+        rgba(255, 255, 255, 0.68) !important;
+}
+
+
+/*
+   Dark-mode hero card feature boxes
+*/
+
+[data-bs-theme="dark"] .hero-card .bg-body {
+
+    background-color:
+        rgba(255, 255, 255, 0.05) !important;
+}
+
+
+/*
+   Dark-mode process cards
+*/
+
+[data-bs-theme="dark"] .process-card {
+
+    background:
+        rgba(255, 255, 255, 0.025);
+
+    border-color:
+        rgba(255, 255, 255, 0.10);
+}
+
+
+[data-bs-theme="dark"] .process-card:hover {
+
+    border-color:
+        rgba(220, 53, 69, 0.45);
+
+    box-shadow:
+        0 0.75rem 1.5rem rgba(0, 0, 0, 0.30);
+}
+
+
+/*
+   Dark-mode feature icons
+*/
+
+[data-bs-theme="dark"] .feature-icon {
+
+    background:
+        rgba(220, 53, 69, 0.15);
+}
+
+
+/* ---------------------------------------------------------
+   RESPONSIVE DESIGN
+   --------------------------------------------------------- */
+
+@media (max-width: 991px) {
+
+    /*
+       Reset desktop card movement on tablet/mobile.
+    */
+
+    .hero-section .col-lg-5 {
+        transform: none;
+    }
+
+
+    .hero-section {
+
+        min-height: auto;
+
+        background-position:
+            58% center;
+    }
+
+
+    .hero-title {
+
+        font-size:
+            clamp(2.4rem, 6vw, 4rem);
+    }
+
+
+    .hero-card {
+
+        margin-top: 1rem;
+    }
+
+}
+
+
+@media (max-width: 767px) {
+
+    .hero-section {
+
+        padding-top: 4rem !important;
+        padding-bottom: 4rem !important;
+
+        background-position:
+            62% center;
+    }
+
+
+    .hero-section::before {
+
+        content: "";
+
+        position: absolute;
+
+        inset: 0;
+
+        background:
+            rgba(0, 10, 20, 0.15);
+
+        pointer-events: none;
+    }
+
+
+    .hero-section .container {
+
+        position: relative;
+
+        z-index: 1;
+    }
+
+
+    .hero-title {
+
+        font-size:
+            clamp(2.2rem, 10vw, 3.2rem);
+    }
+
+
+    .hero-card {
+
+        border-radius: 20px;
+
+        padding: 1.5rem !important;
+    }
+}
+
+
+@media (max-width: 576px) {
+
+    .hero-section {
+
+        background-position:
+            65% center;
+    }
+
+
+    .hero-title {
+
+        letter-spacing:
+            -0.6px;
+    }
+
+
+    .hero-badge {
+
+        font-size:
+            0.8rem;
+    }
+
+
+    .hero-section .lead {
+
+        font-size:
+            1rem;
+    }
+
+
+    .process-card {
+
+        border-radius:
+            14px;
+    }
+}
+
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<!-- =====================================================
+     HERO SECTION
+     ===================================================== -->
+
+<section class="hero-section py-5">
+
+    <div class="container py-lg-5">
+
+        <div class="row align-items-center g-5">
+
+
+            <!-- =================================================
+                 HERO CONTENT
+                 ================================================= -->
+
+            <div class="col-lg-7">
+
+                <span class="hero-badge mb-4">
+
+                    <i class="bi bi-heart-pulse-fill"></i>
+
+                    Intelligent Emergency Blood Matching
+
+                </span>
+
+
+                <h1 class="hero-title display-3 mb-4">
+
+                    Connecting the right
+
+                    <span class="text-danger">
+                        blood donor
+                    </span>
+
+                    when it matters most.
+
+                </h1>
+
+
+                <p class="lead mb-4">
+
+                    BloodMatch helps identify suitable blood donors
+                    during medical emergencies by considering
+                    blood compatibility, eligibility, availability,
+                    location and donor readiness.
+
+                </p>
+
+
+                <!-- HERO BUTTONS -->
+
+                <div class="d-flex flex-column flex-sm-row gap-3">
+
+
+                    <a
+                        href="/register/"
+                        class="btn btn-danger btn-lg px-4"
+                    >
+
+                        <i class="bi bi-droplet-fill me-2"></i>
+
+                        Become a Donor
+
+                    </a>
+
+
+                    <a
+                        href="/login/"
+                        class="btn btn-outline-light btn-lg px-4"
+                    >
+
+                        <i class="bi bi-box-arrow-in-right me-2"></i>
+
+                        Donor Login
+
+                    </a>
+
+
+                </div>
+
+
+                <!-- HERO HIGHLIGHTS -->
+
+                <div class="d-flex flex-wrap gap-4 mt-4">
+
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-check-circle-fill text-danger"></i>
+
+                        <small>
+                            Compatibility-based matching
+                        </small>
+
+                    </div>
+
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-check-circle-fill text-danger"></i>
+
+                        <small>
+                            Eligibility screening
+                        </small>
+
+                    </div>
+
+
+                    <div class="d-flex align-items-center gap-2">
+
+                        <i class="bi bi-check-circle-fill text-danger"></i>
+
+                        <small>
+                            Location-aware matching
+                        </small>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 HERO INFORMATION CARD
+                 ================================================= -->
+
+            <div class="col-lg-5 ">
+
+                <div class="hero-card card p-4 p-lg-5">
+
+
+                    <!-- ICON -->
+
+                    <div class="text-center mb-4">
+
+                        <div
+                            class="mx-auto d-flex align-items-center justify-content-center bg-danger text-white rounded-circle"
+                            style="
+                                width: 90px;
+                                height: 90px;
+                            "
+                        >
+
+                            <i
+                                class="bi bi-droplet-fill"
+                                style="
+                                    font-size: 2.5rem;
+                                "
+                            ></i>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TITLE -->
+
+                    <h2 class="h4 text-center fw-bold mb-3">
+
+                        Built for Emergency Response
+
+                    </h2>
+
+
+                    <!-- DESCRIPTION -->
+
+                    <p class="text-body-secondary text-center mb-4">
+
+                        The system evaluates potential donors and
+                        ranks suitable matches to help administrators
+                        identify the most appropriate donors quickly.
+
+                    </p>
+
+
+                    <!-- FEATURE GRID -->
+
+                    <div class="row g-3">
+
+
+                        <!-- BLOOD MATCH -->
+
+                        <div class="col-6">
+
+                            <div
+                                class="p-3 rounded-3 bg-body border h-100"
+                            >
+
+                                <i
+                                    class="bi bi-droplet-half text-danger fs-4"
+                                ></i>
+
+
+                                <div class="fw-semibold mt-2">
+
+                                    Blood Match
+
+                                </div>
+
+
+                                <small class="text-body-secondary">
+
+                                    Compatibility
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ELIGIBILITY -->
+
+                        <div class="col-6">
+
+                            <div
+                                class="p-3 rounded-3 bg-body border h-100"
+                            >
+
+                                <i
+                                    class="bi bi-shield-check text-danger fs-4"
+                                ></i>
+
+
+                                <div class="fw-semibold mt-2">
+
+                                    Eligibility
+
+                                </div>
+
+
+                                <small class="text-body-secondary">
+
+                                    Mandatory checks
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- LOCATION -->
+
+                        <div class="col-6">
+
+                            <div
+                                class="p-3 rounded-3 bg-body border h-100"
+                            >
+
+                                <i
+                                    class="bi bi-geo-alt text-danger fs-4"
+                                ></i>
+
+
+                                <div class="fw-semibold mt-2">
+
+                                    Location
+
+                                </div>
+
+
+                                <small class="text-body-secondary">
+
+                                    Proximity scoring
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- RANKING -->
+
+                        <div class="col-6">
+
+                            <div
+                                class="p-3 rounded-3 bg-body border h-100"
+                            >
+
+                                <i
+                                    class="bi bi-bar-chart-line text-danger fs-4"
+                                ></i>
+
+
+                                <div class="fw-semibold mt-2">
+
+                                    Ranking
+
+                                </div>
+
+
+                                <small class="text-body-secondary">
+
+                                    Weighted scoring
+
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     HOW IT WORKS
+     ===================================================== -->
+
+<section class="py-5">
+
+    <div class="container py-lg-4">
+
+
+        <!-- SECTION HEADER -->
+
+        <div class="text-center mb-5">
+
+            <span class="text-danger fw-semibold small">
+
+                HOW IT WORKS
+
+            </span>
+
+
+            <h2 class="fw-bold mt-2">
+
+                From emergency request to donor response
+
+            </h2>
+
+
+            <p
+                class="text-body-secondary mx-auto"
+                style="max-width: 600px;"
+            >
+
+                A structured matching process that helps identify
+                and prioritize suitable donors quickly.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- PROCESS CARDS -->
+
+        <div class="row g-4">
+
+
+            <!-- STEP 1 -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div
+                    class="process-card h-100 text-center p-4"
+                >
+
+                    <div class="process-number">
+
+                        01
+
+                    </div>
+
+
+                    <div class="feature-icon mx-auto mb-3">
+
+                        <i class="bi bi-person-plus-fill"></i>
+
+                    </div>
+
+
+                    <h3 class="h5 fw-bold mb-2">
+
+                        Register
+
+                    </h3>
+
+
+                    <p class="text-body-secondary mb-0">
+
+                        Donor information is securely recorded.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STEP 2 -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div
+                    class="process-card h-100 text-center p-4"
+                >
+
+                    <div class="process-number">
+
+                        02
+
+                    </div>
+
+
+                    <div class="feature-icon mx-auto mb-3">
+
+                        <i class="bi bi-funnel-fill"></i>
+
+                    </div>
+
+
+                    <h3 class="h5 fw-bold mb-2">
+
+                        Filter
+
+                    </h3>
+
+
+                    <p class="text-body-secondary mb-0">
+
+                        Eligibility and compatibility are checked.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STEP 3 -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div
+                    class="process-card h-100 text-center p-4"
+                >
+
+                    <div class="process-number">
+
+                        03
+
+                    </div>
+
+
+                    <div class="feature-icon mx-auto mb-3">
+
+                        <i class="bi bi-bar-chart-fill"></i>
+
+                    </div>
+
+
+                    <h3 class="h5 fw-bold mb-2">
+
+                        Rank
+
+                    </h3>
+
+
+                    <p class="text-body-secondary mb-0">
+
+                        Suitable donors are prioritized by score.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- STEP 4 -->
+
+            <div class="col-md-6 col-lg-3">
+
+                <div
+                    class="process-card h-100 text-center p-4"
+                >
+
+                    <div class="process-number">
+
+                        04
+
+                    </div>
+
+
+                    <div class="feature-icon mx-auto mb-3">
+
+                        <i class="bi bi-bell-fill"></i>
+
+                    </div>
+
+
+                    <h3 class="h5 fw-bold mb-2">
+
+                        Respond
+
+                    </h3>
+
+
+                    <p class="text-body-secondary mb-0">
+
+                        Selected donors receive an emergency request.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     CALL TO ACTION
+     ===================================================== -->
+
+<section class="py-5">
+
+    <div class="container">
+
+
+        <div
+            class="card home-cta border-0 bg-danger text-white p-4 p-md-5"
+        >
+
+            <div class="row align-items-center g-4">
+
+
+                <!-- CTA TEXT -->
+
+                <div class="col-lg-8">
+
+                    <h2 class="fw-bold mb-2">
+
+                        Become part of the donor network.
+
+                    </h2>
+
+
+                    <p class="mb-0 opacity-75">
+
+                        Your availability could help administrators
+                        identify a suitable donor during an emergency.
+
+                    </p>
+
+                </div>
+
+
+                <!-- CTA BUTTON -->
+
+                <div class="col-lg-4 text-lg-end">
+
+                    <a
+                        href="/register/"
+                        class="btn btn-light btn-lg px-4"
+                    >
+
+                        Register Now
+
+                        <i class="bi bi-arrow-right ms-2"></i>
+
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+{% endblock %}

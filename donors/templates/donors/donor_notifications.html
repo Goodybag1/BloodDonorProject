@@ -1,0 +1,563 @@
+{% extends 'donors/base.html' %}
+
+{% block title %}
+    My Notifications | BloodMatch
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .notifications-page {
+        padding: 3rem 0 4rem;
+    }
+
+    .notifications-header {
+        margin-bottom: 2rem;
+    }
+
+    .notifications-icon {
+        width: 50px;
+        height: 50px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: var(--blood-soft);
+        color: var(--blood-primary);
+        font-size: 1.25rem;
+    }
+
+    .notifications-title {
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .notification-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.4rem 0.75rem;
+        border-radius: 999px;
+        background: var(--bs-body-tertiary);
+        border: 1px solid var(--bs-border-color);
+        color: var(--bs-secondary-color);
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+
+    /* Notification card */
+
+    .notification-card {
+        border: 1px solid var(--bs-border-color);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.05);
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .notification-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.08);
+        border-color: rgba(220, 53, 69, 0.25);
+    }
+
+    .notification-card-header {
+        padding: 1.25rem 1.5rem;
+        background: var(--bs-body-tertiary);
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+
+    .notification-card-body {
+        padding: 1.5rem;
+    }
+
+    .notification-icon {
+        width: 42px;
+        height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 12px;
+        background: var(--blood-soft);
+        color: var(--blood-primary);
+    }
+
+    .notification-title {
+        font-weight: 700;
+        margin-bottom: 0.15rem;
+    }
+
+    .notification-subtitle {
+        font-size: 0.85rem;
+        color: var(--bs-secondary-color);
+    }
+
+
+    /* New / Read */
+
+    .notification-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0.35rem 0.65rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .notification-new {
+        background: rgba(220, 53, 69, 0.12);
+        color: var(--bs-danger);
+    }
+
+    .notification-read {
+        background: var(--bs-secondary-bg);
+        color: var(--bs-secondary-color);
+    }
+
+
+    /* Message */
+
+    .notification-message {
+        padding: 1rem 1.1rem;
+        border-radius: 12px;
+        background: var(--bs-body-tertiary);
+        border: 1px solid var(--bs-border-color);
+        line-height: 1.6;
+    }
+
+    .notification-time {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 0.85rem;
+        font-size: 0.82rem;
+        color: var(--bs-secondary-color);
+    }
+
+
+    /* Response status */
+
+    .response-alert {
+        border-radius: 12px;
+        margin-top: 1.25rem;
+        margin-bottom: 0;
+    }
+
+    .response-pending {
+        background: rgba(255, 193, 7, 0.10);
+        border: 1px solid rgba(255, 193, 7, 0.25);
+    }
+
+
+    /* Action area */
+
+    .notification-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--bs-border-color);
+    }
+
+    .notification-action-button {
+        min-height: 44px;
+        border-radius: 10px;
+        font-weight: 600;
+        padding-left: 1.1rem;
+        padding-right: 1.1rem;
+    }
+
+
+    /* Empty state */
+
+    .empty-notifications {
+        border: 1px solid var(--bs-border-color);
+        border-radius: 20px;
+        padding: 4rem 1.5rem;
+        text-align: center;
+        background: var(--bs-body);
+        box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.04);
+    }
+
+    .empty-icon {
+        width: 68px;
+        height: 68px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--blood-soft);
+        color: var(--blood-primary);
+        font-size: 1.7rem;
+        margin-bottom: 1.25rem;
+    }
+
+    .empty-title {
+        font-weight: 800;
+    }
+
+
+    @media (max-width: 576px) {
+
+        .notifications-page {
+            padding: 2rem 0 3rem;
+        }
+
+        .notifications-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .notification-card-header {
+            padding: 1rem;
+        }
+
+        .notification-card-body {
+            padding: 1.25rem;
+        }
+
+        .notification-actions {
+            flex-direction: column;
+        }
+
+        .notification-action-button {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="notifications-page">
+
+    <div class="container">
+
+        <!-- Page Header -->
+        <div class="notifications-header">
+
+            <div class="d-flex flex-column flex-sm-row
+                        justify-content-between
+                        align-items-sm-center
+                        gap-3">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="notifications-icon">
+                        <i class="bi bi-bell-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <h1 class="notifications-title h3 mb-1">
+                            My Notifications
+                        </h1>
+
+                        <p class="text-body-secondary mb-0">
+                            Emergency blood requests sent to you.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <span class="notification-count">
+
+                    <i class="bi bi-bell"></i>
+
+                    {{ notifications|length }}
+                    notification{{ notifications|length|pluralize }}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        {% if notifications %}
+
+            <!-- Notifications -->
+            <div class="row g-4">
+
+                {% for notification in notifications %}
+
+                    <div class="col-12">
+
+                        <div class="notification-card bg-body">
+
+                            <!-- Card Header -->
+                            <div class="notification-card-header">
+
+                                <div class="d-flex
+                                            justify-content-between
+                                            align-items-start
+                                            gap-3">
+
+                                    <div class="d-flex
+                                                align-items-center
+                                                gap-3">
+
+                                        <div class="notification-icon">
+                                            <i class="bi bi-heart-pulse-fill"></i>
+                                        </div>
+
+                                        <div>
+
+                                            <div class="notification-title">
+                                                Emergency Blood Request
+                                            </div>
+
+                                            <div class="notification-subtitle">
+                                                BloodMatch emergency notification
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    {% if notification.is_read %}
+
+                                        <span class="notification-status notification-read">
+                                            <i class="bi bi-check2"></i>
+                                            Read
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="notification-status notification-new">
+                                            <i class="bi bi-circle-fill"></i>
+                                            New
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Card Body -->
+                            <div class="notification-card-body">
+
+                                <!-- Message -->
+                                <div class="notification-message">
+
+                                    {{ notification.message }}
+
+                                </div>
+
+
+                                <!-- Date -->
+                                <div class="notification-time">
+
+                                    <i class="bi bi-clock"></i>
+
+                                    {{ notification.date_created|date:"d M Y, H:i" }}
+
+                                </div>
+
+
+                                {% if notification.donor_response %}
+
+                                    {% if notification.donor_response.response_status == 'Accepted' %}
+
+                                        <!-- Accepted -->
+                                        <div class="alert alert-success response-alert">
+
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+
+                                            <strong>Request accepted.</strong>
+
+                                            <div class="small mt-1">
+                                                You accepted this emergency request.
+                                            </div>
+
+                                        </div>
+
+
+                                    {% elif notification.donor_response.response_status == 'Declined' %}
+
+                                        <!-- Declined -->
+                                        <div class="alert alert-secondary response-alert">
+
+                                            <i class="bi bi-x-circle-fill me-2"></i>
+
+                                            <strong>Request declined.</strong>
+
+                                            <div class="small mt-1">
+                                                You declined this emergency request.
+                                            </div>
+
+                                        </div>
+
+
+                                    {% else %}
+
+                                        <!-- Pending -->
+                                        <div class="alert alert-warning response-alert response-pending">
+
+                                            <i class="bi bi-hourglass-split me-2"></i>
+
+                                            <strong>Response pending.</strong>
+
+                                            <div class="small mt-1">
+                                                Please choose whether you can respond to this emergency request.
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- Actions -->
+                                        {% if notification.request.status == 'Active' %}
+
+                                            <div class="notification-actions">
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'accept_donor_request' notification.id %}"
+                                                    class="d-inline"
+                                                >
+
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-success notification-action-button"
+                                                    >
+                                                        <i class="bi bi-check-circle me-2"></i>
+                                                        Accept Request
+                                                    </button>
+
+                                                </form>
+
+
+                                                <form
+                                                    method="post"
+                                                    action="{% url 'decline_donor_request' notification.id %}"
+                                                    class="d-inline"
+                                                >
+
+                                                    {% csrf_token %}
+
+                                                    <button
+                                                        type="submit"
+                                                        class="btn btn-outline-danger notification-action-button"
+                                                    >
+                                                        <i class="bi bi-x-circle me-2"></i>
+                                                        Decline Request
+                                                    </button>
+
+                                                </form>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                    {% endif %}
+
+
+                                {% else %}
+
+                                    <!-- No Response Yet -->
+
+                                    {% if notification.request.status == 'Active' %}
+
+                                        <div class="notification-actions">
+
+                                            <form
+                                                method="post"
+                                                action="{% url 'accept_donor_request' notification.id %}"
+                                                class="d-inline"
+                                            >
+
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-success notification-action-button"
+                                                >
+                                                    <i class="bi bi-check-circle me-2"></i>
+                                                    Accept Request
+                                                </button>
+
+                                            </form>
+
+
+                                            <form
+                                                method="post"
+                                                action="{% url 'decline_donor_request' notification.id %}"
+                                                class="d-inline"
+                                            >
+
+                                                {% csrf_token %}
+
+                                                <button
+                                                    type="submit"
+                                                    class="btn btn-outline-danger notification-action-button"
+                                                >
+                                                    <i class="bi bi-x-circle me-2"></i>
+                                                    Decline Request
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+                                    {% endif %}
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <!-- Empty State -->
+            <div class="empty-notifications">
+
+                <div class="empty-icon">
+                    <i class="bi bi-bell-slash"></i>
+                </div>
+
+                <h2 class="empty-title h5 mb-2">
+                    No notifications yet
+                </h2>
+
+                <p class="text-body-secondary mb-0">
+                    You currently have no emergency blood requests.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

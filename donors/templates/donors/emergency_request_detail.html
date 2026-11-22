@@ -1,0 +1,989 @@
+{% extends 'donors/base.html' %}
+
+{% block title %}
+    Emergency Request #{{ emergency_request.id }} | BloodMatch
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .request-page {
+        padding: 3rem 0 4rem;
+    }
+
+    .request-card,
+    .matches-card {
+        border: 1px solid var(--bs-border-color);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.06);
+    }
+
+    .request-header {
+        padding: 1.75rem 2rem;
+        background:
+            linear-gradient(
+                135deg,
+                rgba(220, 53, 69, 0.10),
+                transparent
+            );
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+
+    .request-icon {
+        width: 48px;
+        height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 14px;
+        background: var(--blood-soft);
+        color: var(--blood-primary);
+        font-size: 1.25rem;
+    }
+
+    .request-title {
+        font-weight: 800;
+        letter-spacing: -0.4px;
+    }
+
+    .request-id {
+        font-size: 0.85rem;
+        color: var(--bs-secondary-color);
+    }
+
+    .info-item {
+        height: 100%;
+        padding: 1rem;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 12px;
+        background: var(--bs-body-bg);
+    }
+
+    .info-label {
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--bs-secondary-color);
+        margin-bottom: 0.35rem;
+    }
+
+    .info-value {
+        font-weight: 600;
+    }
+
+    .blood-group-display {
+        color: var(--bs-danger);
+        font-size: 1.15rem;
+        font-weight: 800;
+    }
+
+    .details-box {
+        padding: 1rem 1.25rem;
+        border-radius: 12px;
+        background: var(--bs-body-tertiary);
+        border: 1px solid var(--bs-border-color);
+    }
+
+    .status-section {
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--bs-border-color);
+    }
+
+    .status-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--bs-secondary-color);
+        margin-bottom: 0.75rem;
+    }
+
+    .status-badge-large {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.45rem 0.8rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    .status-pending {
+        background: rgba(255, 193, 7, 0.15);
+        color: #997404;
+    }
+
+    .status-active {
+        background: rgba(13, 110, 253, 0.12);
+        color: #0a58ca;
+    }
+
+    .status-fulfilled {
+        background: rgba(25, 135, 84, 0.12);
+        color: #146c43;
+    }
+
+    .status-closed {
+        background: rgba(108, 117, 125, 0.14);
+        color: var(--bs-secondary-color);
+    }
+
+    [data-bs-theme="dark"] .status-pending {
+        color: #ffda6a;
+    }
+
+    [data-bs-theme="dark"] .status-active {
+        color: #6ea8fe;
+    }
+
+    [data-bs-theme="dark"] .status-fulfilled {
+        color: #75b798;
+    }
+
+    .matches-header {
+        padding: 1.5rem 2rem;
+        background: var(--bs-body-tertiary);
+        border-bottom: 1px solid var(--bs-border-color);
+    }
+
+    .matches-header-title {
+        font-weight: 800;
+        margin-bottom: 0.25rem;
+    }
+
+    .matches-header-subtitle {
+        color: var(--bs-secondary-color);
+        margin-bottom: 0;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead th {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+
+    .table tbody td {
+        white-space: nowrap;
+    }
+
+    .rank-number {
+        width: 32px;
+        height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--bs-body-tertiary);
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .donor-name {
+        font-weight: 700;
+    }
+
+    .blood-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 44px;
+        padding: 0.35rem 0.5rem;
+        border-radius: 8px;
+        background: rgba(220, 53, 69, 0.10);
+        color: var(--bs-danger);
+        font-weight: 800;
+    }
+
+    .score-value {
+        font-weight: 600;
+    }
+
+    .final-score {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 72px;
+        padding: 0.4rem 0.6rem;
+        border-radius: 8px;
+        background: rgba(25, 135, 84, 0.12);
+        color: var(--bs-success);
+        font-weight: 800;
+    }
+
+    .selection-area {
+        padding: 1.25rem 1.5rem;
+        border-top: 1px solid var(--bs-border-color);
+        background: var(--bs-body-tertiary);
+    }
+
+    .select-button {
+        min-height: 44px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    .empty-state {
+        padding: 3rem 1.5rem;
+        text-align: center;
+    }
+
+    .empty-icon {
+        width: 60px;
+        height: 60px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 193, 7, 0.15);
+        color: var(--bs-warning);
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 576px) {
+
+        .request-page {
+            padding: 2rem 0 3rem;
+        }
+
+        .request-header,
+        .matches-header {
+            padding: 1.25rem;
+        }
+
+        .request-card .card-body {
+            padding: 1.25rem !important;
+        }
+
+        .selection-area {
+            padding: 1rem;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="request-page">
+
+    <div class="container">
+
+        <!-- Emergency Request -->
+        <div class="request-card bg-body mb-4">
+
+            <!-- Header -->
+            <div class="request-header">
+
+                <div class="d-flex align-items-center gap-3">
+
+                    <div class="request-icon">
+                        <i class="bi bi-heart-pulse-fill"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="request-id">
+                            Emergency Request #{{ emergency_request.id }}
+                        </div>
+
+                        <h1 class="request-title h3 mb-0">
+                            Emergency Blood Request
+                        </h1>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-body p-4 p-md-5">
+
+                <!-- Request Information -->
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Blood Group Required
+                            </span>
+
+                            <span class="blood-group-display">
+                                <i class="bi bi-droplet-fill me-1"></i>
+                                {{ emergency_request.requested_blood_group }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-6">
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Request Status
+                            </span>
+
+                            {% if emergency_request.status == 'Pending' %}
+
+                                <span class="status-badge-large status-pending">
+                                    <i class="bi bi-clock"></i>
+                                    Pending
+                                </span>
+
+                            {% elif emergency_request.status == 'Active' %}
+
+                                <span class="status-badge-large status-active">
+                                    <i class="bi bi-lightning-fill"></i>
+                                    Active
+                                </span>
+
+                            {% elif emergency_request.status == 'Fulfilled' %}
+
+                                <span class="status-badge-large status-fulfilled">
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    Fulfilled
+                                </span>
+
+                            {% elif emergency_request.status == 'Closed' %}
+
+                                <span class="status-badge-large status-closed">
+                                    <i class="bi bi-lock-fill"></i>
+                                    Closed
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                State
+                            </span>
+
+                            <span class="info-value">
+                                <i class="bi bi-geo-alt me-1 text-danger"></i>
+                                {{ emergency_request.state }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                City
+                            </span>
+
+                            <span class="info-value">
+                                {{ emergency_request.city }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-md-4">
+
+                        <div class="info-item">
+
+                            <span class="info-label">
+                                Date Created
+                            </span>
+
+                            <span class="info-value">
+                                {{ emergency_request.date_created|date:"d M Y, H:i" }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Emergency Details -->
+                <div class="mt-4">
+
+                    <div class="info-label">
+                        Emergency Details
+                    </div>
+
+                    <div class="details-box">
+                        {{ emergency_request.request_details }}
+                    </div>
+
+                </div>
+
+
+                <!-- Request Status Controls -->
+                <div class="status-section">
+
+                    <div class="status-label">
+                        Request Status
+                    </div>
+
+
+                    {% if emergency_request.status == 'Pending' %}
+
+                        <form
+                            method="post"
+                            action="{% url 'activate_emergency_request' emergency_request.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                <i class="bi bi-lightning-fill me-1"></i>
+                                Activate Request
+                            </button>
+
+                        </form>
+
+
+                    {% elif emergency_request.status == 'Active' %}
+
+                        <form
+                            method="post"
+                            action="{% url 'fulfill_emergency_request' emergency_request.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-success"
+                            >
+                                <i class="bi bi-check-circle me-1"></i>
+                                Mark as Fulfilled
+                            </button>
+
+                        </form>
+
+
+                    {% elif emergency_request.status == 'Fulfilled' %}
+
+                        <form
+                            method="post"
+                            action="{% url 'close_emergency_request' emergency_request.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="btn btn-secondary"
+                            >
+                                <i class="bi bi-lock me-1"></i>
+                                Close Request
+                            </button>
+
+                        </form>
+
+
+                    {% elif emergency_request.status == 'Closed' %}
+
+                        <div class="alert alert-secondary mb-0">
+
+                            <i class="bi bi-lock-fill me-2"></i>
+
+                            This emergency request is closed.
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+                  
+        <!-- Donor Responses -->
+        <div class="matches-card bg-body mb-4">
+
+            <div class="matches-header">
+
+                <h2 class="matches-header-title h4">
+                    <i class="bi bi-people-fill text-danger me-2"></i>
+                    Donor Responses
+                </h2>
+
+                <p class="matches-header-subtitle">
+                    View the responses submitted by donors
+                    who were notified about this emergency.
+                </p>
+
+            </div>
+
+            <div class="card-body p-0">
+
+                {% if donor_responses %}
+
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered table-hover align-middle">
+
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Donor</th>
+                                    <th>Blood Group</th>
+                                    <th>Response Status</th>
+                                    <th>Response Date</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+
+                                {% for donor_response in donor_responses %}
+
+                                    <tr>
+
+                                        <td>
+                                            <span class="donor-name">
+                                                {{ donor_response.donor.first_name }}
+                                                {{ donor_response.donor.last_name }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="blood-badge">
+                                                {{ donor_response.donor.blood_group }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+
+                                            {% if donor_response.response_status == 'Accepted' %}
+
+                                                <span class="badge text-bg-success">
+                                                    <i class="bi bi-check-circle me-1"></i>
+                                                    Accepted
+                                                </span>
+
+                                            {% elif donor_response.response_status == 'Declined' %}
+
+                                                <span class="badge text-bg-danger">
+                                                    <i class="bi bi-x-circle me-1"></i>
+                                                    Declined
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="badge text-bg-warning">
+                                                    <i class="bi bi-clock me-1"></i>
+                                                    Pending
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+                                        <td>
+                                            {% if donor_response.response_date %}
+                                                {{ donor_response.response_date|date:"d M Y, H:i" }}
+                                            {% else %}
+                                                —
+                                            {% endif %}
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            <i class="bi bi-chat-square-text"></i>
+                        </div>
+
+                        <h3 class="h5 fw-bold">
+                            No donor responses yet
+                        </h3>
+
+                        <p class="text-body-secondary mb-0">
+                            Donor responses will appear here
+                            when notified donors accept or decline
+                            this emergency request.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+        <!-- Ranked Donor Matches -->
+        <div class="matches-card bg-body">
+
+            <div class="matches-header">
+
+                <h2 class="matches-header-title h4">
+                    <i class="bi bi-bar-chart-fill text-danger me-2"></i>
+                    Ranked Donor Matches
+                </h2>
+
+                <p class="matches-header-subtitle">
+                    Suitable donors are ranked using compatibility,
+                    eligibility, proximity and readiness criteria.
+                </p>
+
+            </div>
+
+
+            <div class="card-body p-0">
+
+                {% if ranked_donors %}
+
+
+                    <!-- Donor Selection Form -->
+                    {% if emergency_request.status == 'Active' %}
+
+                        <form
+                            method="post"
+                            action="{% url 'select_donors_for_notification' emergency_request.id %}"
+                        >
+
+                            {% csrf_token %}
+
+                    {% endif %}
+
+
+                    <div class="table-responsive">
+
+                        <table class="table table-bordered table-hover align-middle">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th class="text-center">
+                                        Select
+                                    </th>
+
+                                    <th>
+                                        Rank
+                                    </th>
+
+                                    <th>
+                                        Donor
+                                    </th>
+
+                                    <th>
+                                        Blood Group
+                                    </th>
+
+                                    <th>
+                                        Gender
+                                    </th>
+
+                                    <th>
+                                        City
+                                    </th>
+
+                                    <th>
+                                        State
+                                    </th>
+
+                                    <th>
+                                        Available
+                                    </th>
+
+                                    <th>
+                                        Medically Eligible
+                                    </th>
+
+                                    <th>
+                                        Proximity Score
+                                    </th>
+
+                                    <th>
+                                        Readiness Score
+                                    </th>
+
+                                    <th>
+                                        Final Score
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for match in ranked_donors %}
+
+                                    <tr>
+
+                                        <!-- Selection -->
+                                        <td class="text-center">
+
+                                            {% if emergency_request.status == 'Active' %}
+                                                <input
+                                                    type="checkbox"
+                                                    name="selected_donors"
+                                                    value="{{ match.donor.id }}"
+                                                    class="form-check-input"
+                                                >
+
+                                            {% else %}
+
+                                                <span class="text-body-secondary">
+                                                    —
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- Rank -->
+                                        <td>
+
+                                            <span class="rank-number">
+                                                {{ forloop.counter }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- Donor -->
+                                        <td>
+
+                                            <span class="donor-name">
+                                                {{ match.donor.first_name }}
+                                                {{ match.donor.last_name }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- Blood Group -->
+                                        <td>
+
+                                            <span class="blood-badge">
+                                                {{ match.donor.blood_group }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- Gender -->
+                                        <td>
+                                            {{ match.donor.gender }}
+                                        </td>
+
+
+                                        <!-- City -->
+                                        <td>
+                                            {{ match.donor.city }}
+                                        </td>
+
+
+                                        <!-- State -->
+                                        <td>
+                                            {{ match.donor.state }}
+                                        </td>
+
+
+                                        <!-- Availability -->
+                                        <td>
+
+                                            {% if match.donor.is_available %}
+
+                                                <span class="badge text-bg-success">
+                                                    <i class="bi bi-check-lg me-1"></i>
+                                                    Yes
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="badge text-bg-secondary">
+                                                    No
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- Medical Eligibility -->
+                                        <td>
+
+                                            {% if match.donor.is_medically_eligible %}
+
+                                                <span class="badge text-bg-success">
+                                                    <i class="bi bi-check-lg me-1"></i>
+                                                    Yes
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="badge text-bg-secondary">
+                                                    No
+                                                </span>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- Proximity -->
+                                        <td>
+
+                                            <span class="score-value">
+                                                {{ match.proximity_score|floatformat:2 }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- Readiness -->
+                                        <td>
+
+                                            <span class="score-value">
+                                                {{ match.readiness_score|floatformat:2 }}
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- Final Score -->
+                                        <td>
+
+                                            <span class="final-score">
+                                                {{ match.score|floatformat:2 }}
+                                            </span>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+
+                    <!-- Selection Action -->
+                    {% if emergency_request.status == 'Active' %}
+
+                        <div class="selection-area">
+
+                            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+
+                                <div>
+
+                                    <div class="fw-semibold">
+                                        Select suitable donors
+                                    </div>
+
+                                    <div class="small text-body-secondary">
+                                        Selected donors will receive an emergency notification.
+                                    </div>
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-danger px-4 select-button"
+                                >
+                                    <i class="bi bi-bell me-2"></i>
+                                    Select Donors for Notification
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    {% if emergency_request.status == 'Active' %}
+
+                        </form>
+
+                    {% endif %}
+
+
+                {% else %}
+
+                    <!-- No Matches -->
+                    <div class="empty-state">
+
+                        <div class="empty-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <h3 class="h5 fw-bold">
+                            No matching donors found
+                        </h3>
+
+                        <p class="text-body-secondary mb-0">
+                            No donor currently satisfies the required
+                            compatibility, eligibility, availability,
+                            and location criteria.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

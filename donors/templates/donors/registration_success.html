@@ -1,0 +1,184 @@
+{% extends 'donors/base.html' %}
+
+{% block title %}
+    Registration Successful | BloodMatch
+{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+    .success-page {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        padding: 4rem 0;
+    }
+
+    .success-card {
+        border: 1px solid var(--bs-border-color);
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.08);
+    }
+
+    .success-card-body {
+        padding: 3.5rem 2rem;
+    }
+
+    .success-icon {
+        width: 78px;
+        height: 78px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(25, 135, 84, 0.12);
+        color: var(--bs-success);
+        font-size: 2.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .success-title {
+        font-weight: 800;
+        letter-spacing: -0.5px;
+    }
+
+    .success-message {
+        max-width: 560px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .success-info {
+        max-width: 520px;
+        margin: 1.75rem auto 0;
+        padding: 1rem 1.25rem;
+        border-radius: 14px;
+        background: var(--bs-body-tertiary);
+        border: 1px solid var(--bs-border-color);
+    }
+
+    .home-button {
+        min-height: 46px;
+        border-radius: 10px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 576px) {
+
+        .success-page {
+            padding: 2.5rem 0;
+        }
+
+        .success-card-body {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .success-icon {
+            width: 68px;
+            height: 68px;
+            font-size: 2rem;
+        }
+
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="success-page">
+
+    <div class="container">
+
+        <div class="row justify-content-center">
+
+            <div class="col-lg-7 col-md-9">
+
+                <div class="success-card bg-body">
+
+                    <div class="success-card-body text-center">
+
+                        <!-- Success Icon -->
+                        <div class="success-icon">
+                            <i class="bi bi-check-lg"></i>
+                        </div>
+
+
+                        <!-- Heading -->
+                        <h1 class="success-title h2 mb-3">
+                            Registration Successful
+                        </h1>
+
+
+                        <!-- Main Message -->
+                        <div class="success-message">
+
+                            <p class="lead mb-2">
+                                Thank you for registering as a blood donor.
+                            </p>
+
+                            <p class="text-body-secondary mb-0">
+                                Your information has been successfully
+                                recorded in the BloodMatch system.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Information -->
+                        <div class="success-info text-start">
+
+                            <div class="d-flex gap-3 align-items-start">
+
+                                <i class="bi bi-heart-pulse-fill text-danger fs-5 mt-1"></i>
+
+                                <div>
+
+                                    <div class="fw-semibold mb-1">
+                                        You're now part of the donor network.
+                                    </div>
+
+                                    <div class="small text-body-secondary">
+                                        Your registered information can help
+                                        identify suitable donors during emergency
+                                        blood requests.
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Action -->
+                        <div class="mt-4">
+
+                            <a
+                                href="{% url 'home' %}"
+                                class="btn btn-danger px-4 home-button"
+                            >
+                                <i class="bi bi-house-door me-2"></i>
+                                Return to Home
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
