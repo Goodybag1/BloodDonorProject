@@ -157,3 +157,23 @@ if not DEBUG:
     "DJANGO_CSRF_TRUSTED_ORIGINS",
     ""
 ).split(",") if os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS") else []
+
+# Production error logging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
