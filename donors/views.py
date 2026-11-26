@@ -145,6 +145,11 @@ def emergency_request_detail(request, request_id):
         'donor__last_name'
     )
 
+    # Identify donors already notified for this request.
+    notified_donor_ids = set(
+        donor_responses.values_list('donor_id', flat=True)
+    )
+
     return render(
         request,
         'donors/emergency_request_detail.html',
@@ -152,6 +157,7 @@ def emergency_request_detail(request, request_id):
             'emergency_request': emergency_request,
             'ranked_donors': ranked_donors,
             'donor_responses': donor_responses,
+            'notified_donor_ids': notified_donor_ids,
         }
     )
 

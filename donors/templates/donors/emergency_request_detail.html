@@ -764,12 +764,18 @@
                                         <td class="text-center">
 
                                             {% if emergency_request.status == 'Active' %}
-                                                <input
-                                                    type="checkbox"
-                                                    name="selected_donors"
-                                                    value="{{ match.donor.id }}"
-                                                    class="form-check-input"
-                                                >
+                                                {% if match.donor.id not in notified_donor_ids %}
+                                                    <input
+                                                        type="checkbox"
+                                                        name="selected_donors"
+                                                        value="{{ match.donor.id }}"
+                                                        class="form-check-input"
+                                                    >
+                                                {% else %}
+                                                    <span class="text-body-secondary">
+                                                        —
+                                                    </span>
+                                                {% endif %}
 
                                             {% else %}
 
